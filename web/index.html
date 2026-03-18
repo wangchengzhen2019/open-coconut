@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniOneAI Pro AI椰子-管理后台</title>
+    <style>
+        /* 全局样式重置 */
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
+        
+        /* 主体样式 */
+        body { 
+            background: #f0f2f5; 
+            padding: 20px; 
+        }
+        
+        /* 容器样式 */
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+        }
+        
+        /* 标题样式 */
+        h1 { 
+            color: #1f2937; 
+            margin-bottom: 25px; 
+            border-bottom: 2px solid #e5e7eb; 
+            padding-bottom: 15px; 
+            font-size: 24px;
+        }
+        
+        h2 {
+            color: #374151;
+            margin: 20px 0 15px;
+            font-size: 18px;
+        }
+        
+        h3 {
+            color: #4b5563;
+            margin: 20px 0 15px;
+            font-size: 16px;
+        }
+        
+        /* 标签页样式 */
+        .tab { 
+            margin-bottom: 20px; 
+            display: flex;
+            gap: 5px;
+        }
+        
+        .tab button { 
+            padding: 12px 24px; 
+            border: none; 
+            background: #e5e7eb; 
+            cursor: pointer; 
+            border-radius: 8px 8px 0 0;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .tab button.active { 
+            background: #2563eb; 
+            color: white; 
+        }
+        
+        .tab button:hover:not(.active) {
+            background: #d1d5db;
+        }
+        
+        /* 标签内容样式 */
+        .tab-content { 
+            display: none; 
+            padding: 25px; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 0 8px 8px 8px; 
+            background: #f9fafb;
+        }
+        
+        .tab-content.active { 
+            display: block; 
+            animation: fadeIn 0.3s ease;
+        }
+        
+        /* 表格样式 */
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 15px 0; 
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        th { 
+            padding: 14px 12px; 
+            border: 1px solid #e5e7eb; 
+            text-align: left; 
+            background: #f3f4f6;
+            color: #1f2937;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        td { 
+            padding: 12px 12px; 
+            border: 1px solid #e5e7eb; 
+            text-align: left;
+            font-size: 14px;
+            color: #374151;
+        }
+        
+        tr:hover {
+            background: #f9fafb;
+        }
+        
+        /* 表单样式 */
+        form { 
+            margin: 20px 0; 
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+        
+        input, select { 
+            width: 100%; 
+            padding: 10px 12px; 
+            border: 1px solid #d1d5db; 
+            border-radius: 6px; 
+            font-size: 14px;
+            transition: border 0.2s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        /* 按钮样式 */
+        button { 
+            padding: 10px 20px; 
+            background: #2563eb; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        button:hover { 
+            background: #1d4ed8; 
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        /* 提示信息样式 */
+        .success { 
+            color: #059669; 
+            margin: 10px 0; 
+            padding: 10px;
+            background: #ecfdf5;
+            border-radius: 6px;
+            border-left: 4px solid #059669;
+        }
+        
+        .error { 
+            color: #dc2626; 
+            margin: 10px 0;
+            padding: 10px;
+            background: #fef2f2;
+            border-radius: 6px;
+            border-left: 4px solid #dc2626;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .tab {
+                flex-wrap: wrap;
+            }
+            
+            .tab button {
+                padding: 10px 16px;
+                flex: 1;
+                text-align: center;
+            }
+            
+            .tab-content {
+                padding: 15px;
+            }
+            
+            table {
+                font-size: 13px;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+       <h1>MiniOneAI Pro AI椰子-管理后台</h1>
+        
+        <!-- 标签页切换 -->
+        <div class="tab">
+            <button class="tablinks active" onclick="openTab(event, 'models')">模型配置</button>
+            <button class="tablinks" onclick="openTab(event, 'apikeys')">API密钥管理</button>
+            <button class="tablinks" onclick="openTab(event, 'logs')">调用日志</button>
+        </div>
+
+        <!-- 模型配置标签页 -->
+        <div id="models" class="tab-content active">
+            <h2>模型配置</h2>
+            <table>
+                <tr>
+                    <th>模型名称</th>
+                    <th>提供商</th>
+                    <th>接口地址</th>
+                    <th>API密钥</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+                <!-- 后端渲染的模型数据会在这里显示 -->
+                <tr>
+                    <td>gpt-3.5-turbo</td>
+                    <td>openai</td>
+                    <td>https://api.openai.com/v1/chat/completions</td>
+                    <td>sk-xxxxxx</td>
+                    <td>启用</td>
+                    <td>
+                        <button onclick="editModel('gpt-3.5-turbo')">编辑</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>qwen-turbo</td>
+                    <td>qwen</td>
+                    <td>https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation</td>
+                    <td>sk-xxxxxx</td>
+                    <td>启用</td>
+                    <td>
+                        <button onclick="editModel('qwen-turbo')">编辑</button>
+                    </td>
+                </tr>
+            </table>
+
+            <h3>编辑模型</h3>
+            <form id="modelForm">
+                <div class="form-group">
+                    <label>模型名称</label>
+                    <input type="text" id="modelName" required placeholder="例如：gpt-3.5-turbo">
+                </div>
+                <div class="form-group">
+                    <label>提供商</label>
+                    <select id="provider">
+                        <option value="openai">OpenAI</option>
+                        <option value="qwen">通义千问</option>
+                        <option value="ernie">文心一言</option>
+                        <option value="hunyuan">腾讯混元</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>接口地址</label>
+                    <input type="text" id="endpoint" required placeholder="例如：https://api.openai.com/v1/chat/completions">
+                </div>
+                <div class="form-group">
+                    <label>API密钥</label>
+                    <input type="text" id="apiKey" required placeholder="例如：sk-xxxxxxxxxxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label>状态</label>
+                    <select id="enabled">
+                        <option value="1">启用</option>
+                        <option value="0">禁用</option>
+                    </select>
+                </div>
+                <button type="submit">保存修改</button>
+                <div id="modelMessage"></div>
+            </form>
+        </div>
+
+        <!-- API密钥管理标签页 -->
+        <div id="apikeys" class="tab-content">
+            <h2>API密钥管理</h2>
+            <table>
+                <tr>
+                    <th>密钥</th>
+                    <th>名称</th>
+                    <th>状态</th>
+                    <th>创建时间</th>
+                </tr>
+                <!-- 后端渲染的密钥数据会在这里显示 -->
+                <tr>
+                    <td>minioneai-admin</td>
+                    <td>默认管理员密钥</td>
+                    <td>启用</td>
+                    <td>2026-03-18 10:00:00</td>
+                </tr>
+            </table>
+
+            <h3>添加新API密钥</h3>
+            <form id="apiKeyForm">
+                <div class="form-group">
+                    <label>密钥</label>
+                    <input type="text" id="newApiKey" required placeholder="例如：minioneai-xxxxxx">
+                </div>
+                <div class="form-group">
+                    <label>名称</label>
+                    <input type="text" id="keyName" required placeholder="例如：测试密钥">
+                </div>
+                <button type="submit">添加</button>
+                <div id="apiKeyMessage"></div>
+            </form>
+        </div>
+
+        <!-- 调用日志标签页 -->
+        <div id="logs" class="tab-content">
+            <h2>调用日志</h2>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>API密钥</th>
+                    <th>模型</th>
+                    <th>提供商</th>
+                    <th>Prompt Tokens</th>
+                    <th>Completion Tokens</th>
+                    <th>时间</th>
+                </tr>
+                <!-- 后端渲染的日志数据会在这里显示 -->
+                <tr>
+                    <td>1</td>
+                    <td>minioneai-admin</td>
+                    <td>gpt-3.5-turbo</td>
+                    <td>openai</td>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>2026-03-18 10:30:00</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // 标签页切换函数
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            // 隐藏所有标签内容
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            
+            // 移除所有标签按钮的激活状态
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            
+            // 显示当前标签内容并激活按钮
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // 编辑模型函数
+        function editModel(modelName) {
+            // 填充模型名称到表单
+            document.getElementById("modelName").value = modelName;
+            // 滚动到表单位置
+            document.getElementById("modelForm").scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 提交模型表单
+        document.getElementById("modelForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            // 收集表单数据
+            const data = {
+                model_name: document.getElementById("modelName").value,
+                provider: document.getElementById("provider").value,
+                endpoint: document.getElementById("endpoint").value,
+                api_key: document.getElementById("apiKey").value,
+                enabled: document.getElementById("enabled").value
+            };
+
+            try {
+                // 发送更新请求到后端
+                const response = await fetch("/admin/update_model", {
+                    method: "POST",
+                    body: new URLSearchParams(data),
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" }
+                });
+                
+                const result = await response.json();
+                
+                // 显示结果提示
+                if (result.status === "success") {
+                    document.getElementById("modelMessage").innerHTML = 
+                        '<div class="success">✅ 修改成功！页面将自动刷新...</div>';
+                    // 1秒后刷新页面
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    document.getElementById("modelMessage").innerHTML = 
+                        `<div class="error">❌ 修改失败：${result.message || '未知错误'}</div>`;
+                }
+            } catch (error) {
+                document.getElementById("modelMessage").innerHTML = 
+                    `<div class="error">❌ 请求失败：${error.message}</div>`;
+            }
+        });
+
+        // 提交API密钥表单
+        document.getElementById("apiKeyForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            // 收集表单数据
+            const data = {
+                key: document.getElementById("newApiKey").value,
+                name: document.getElementById("keyName").value
+            };
+
+            try {
+                // 发送添加请求到后端
+                const response = await fetch("/admin/add_api_key", {
+                    method: "POST",
+                    body: new URLSearchParams(data),
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" }
+                });
+                
+                const result = await response.json();
+                
+                // 显示结果提示
+                if (result.status === "success") {
+                    document.getElementById("apiKeyMessage").innerHTML = 
+                        '<div class="success">✅ 添加成功！页面将自动刷新...</div>';
+                    // 重置表单
+                    this.reset();
+                    // 1秒后刷新页面
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    document.getElementById("apiKeyMessage").innerHTML = 
+                        `<div class="error">❌ 添加失败：${result.message || '未知错误'}</div>`;
+                }
+            } catch (error) {
+                document.getElementById("apiKeyMessage").innerHTML = 
+                    `<div class="error">❌ 请求失败：${error.message}</div>`;
+            }
+        });
+
+        // 页面加载完成后初始化
+        window.onload = function() {
+            // 默认选中第一个标签页
+            document.querySelector('.tablinks').click();
+            // 初始化表单默认值
+            document.getElementById("provider").value = "openai";
+            document.getElementById("enabled").value = "1";
+        };
+    </script>
+</body>
+</html>
